@@ -22,10 +22,37 @@ class BrownianMotion:
         else:
             return w
 
+    def show_lil(self):
+        pass
+
+    def show_slln(self):
+        pass
+
+    def show_time_inversion(self):
+        pass
+
+class BrownianBridge(BrownianMotion):
+    def __init__(self, T=1, n=1, x=0, y=1):
+        super().__init__(0, 1, T, n)
+        self.x = x
+        self.y = y
+
+    def generate_bb_path(self, ret_t: bool = False):
+        s = [i * self.T / self.n for i in range(0, self.n + 1)]
+        w = [self.x]
+        for i in range(1, self.n):
+            w.append((s[self.n] - s[i])*w[i - 1]/(s[self.n] - s[i - 1]) +
+                     (s[i] - s[i - 1])*self.y/(s[self.n] - s[i - 1]) +
+                     np.sqrt((s[self.n] - s[i])*(s[i] - s[i - 1])/(s[self.n] - s[i - 1]))*np.random.normal())
+        w.append(self.y)
+        if ret_t:
+            return s, w
+        else:
+            return w
 
 
 if __name__ == '__main__':
-    bm = BrownianMotion(n=10000)
+    bb = BrownianBridge(n=10000)
     plt.figure(figsize=(10, 10))
-    plt.plot(bm.generate_bm_path())
+    plt.plot(bb.generate_bb_path())
     plt.show()
