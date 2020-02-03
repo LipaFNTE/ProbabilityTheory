@@ -50,9 +50,26 @@ class BrownianBridge(BrownianMotion):
         else:
             return w
 
+    def surface_calc(self, t, bb):
+        delta = t[1] - t[0]
+        surface = []
+        for i in range(1, len(bb)):
+            if bb[i - 1] > self.y:
+                surface.append(delta*(bb[i - 1] - self.y))
+
+        return sum(surface)
+
+
+
 
 if __name__ == '__main__':
-    bb = BrownianBridge(n=10000)
-    plt.figure(figsize=(10, 10))
-    plt.plot(bb.generate_bb_path())
+    bb = BrownianBridge(n=15000)
+    s = []
+    for i in range(20000):
+        t, w = bb.generate_bb_path(True)
+        s.append(bb.surface_calc(t, w))
+
+    plt.hist(s, bins=25)
     plt.show()
+    print(np.mean(s))
+    print(np.std(s))
